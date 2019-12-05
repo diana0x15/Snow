@@ -4,7 +4,7 @@
 // This code is licensed under the terms of the Creative Commons
 // Attribution 2.0 Generic (CC BY 3.0) License.
 //
-// Library used: SOIL
+// Libraries used: SOIL (https://www.lonesock.net/soil.html) and CGLM (https://github.com/recp/cglm)
 //
 // Particle System - Snow
 //
@@ -34,9 +34,6 @@ struct Particle createParticle() {
     p.pos.y = WORLD.y;
     p.pos.z = myRandom() * WORLD.z;
 
-    p.color = COLOR;
-    p.velocity = VELOCITY;
-    p.size = SIZE;
     p.time = 0.0f;
 
     p.type = 0;
@@ -51,7 +48,7 @@ void emitParticles() {
         return;
     }
 
-    int NEW_N = N + PARTICLES_PER_MS;
+    int NEW_N = N + PARTICLES_PER_FR;
 
     for(int i = N; i < NEW_N; ++i) {
         particles[i] = createParticle();
@@ -73,15 +70,18 @@ void loadTexture()
             SOIL_LOAD_AUTO,
             SOIL_CREATE_NEW_ID,
             SOIL_FLAG_INVERT_Y);
+
+    loadHouseTexture();
 }
 
 void renderParticles()
 {
-    long long p;
     struct Particle particle;
     struct Location partPos;
     int type;
-    float size = SIZE/2;
+    float size;
+    if (TEXTURE) size = SIZE_QUAD/2;
+    else         size = SIZE_POINT;
 
     glDepthMask(GL_FALSE);
 
@@ -110,7 +110,7 @@ void renderParticles()
             glEnd();
             glDisable(GL_TEXTURE_2D);
         } else {
-            glPointSize(SIZE);
+            glPointSize(size);
             glBegin(GL_POINTS);
                 glVertex3f(partPos.x, partPos.y,partPos.z);
             glEnd();
@@ -121,12 +121,10 @@ void renderParticles()
 
 
 void updateParticles() {
-    float distance = 0;
     int ground;
+    int dead_particles = 0;
     for(int i = 0; i < N; ++i) {
-        // distance = particles[i].velocity.y * particles[i].time + 0.5 * GRAVITY * (particles[i].time * particles[i].time);
-        // particles[i].pos.y += distance;
-        particles[i].pos.y += particles[i].velocity.y * particles[i].time + GRAVITY * particles[i].time * particles[i].time;
+        particles[i].pos.y += GRAVITY * particles[i].time * particles[i].time + particles[i].time * VELOCITY.y;
         particles[i].time += 0.001;
 
         ground = 0.0;
@@ -142,9 +140,16 @@ void updateParticles() {
             particles[i].pos.y = ground;
             if (particles[i].time >= LIFETIME) {
                 particles[i] = createParticle();
+                dead_particles++;
             }
         }
     }
+
+    N-=dead_particles;
+    for(int i = 0; i < N; ++i) {
+        particles[i] = particles[dead_particles+i];
+    }
+
 
     glutPostRedisplay();
     renderParticles();
@@ -152,8 +157,12 @@ void updateParticles() {
 }
 
 void calculateFrameRate() {
+    FRAME_COUNT++;
     int currentTime = glutGet(GLUT_ELAPSED_TIME);
-    FRAME_RATE = 1000/(currentTime - TIME_ELAPSED);
+    if (FRAME_COUNT % 10 == 0) {
+        FRAME_COUNT = 0;
+        FRAME_RATE = 1000 / (currentTime - TIME_ELAPSED);
+    }
     TIME_ELAPSED = currentTime;
 }
 
@@ -168,7 +177,6 @@ void reshape(int width, int height)
 
 void display()
 {
-    TIME_ELAPSED++;
     calculateFrameRate();
 
     glLoadIdentity();

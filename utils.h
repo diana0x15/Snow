@@ -9,23 +9,26 @@ GLuint axisList;
 GLuint floorList;
 
 int AXIS_SIZE= 800;
-bool AXIS_ENABLED = true;
+bool AXIS_ENABLED = false;
 bool FLOOR_ENABLED = true;
-bool HOUSES = true;
+bool HOUSES = false;
 bool TEXTURE = true;
 
-int SIZE = 20;
-int PARTICLES_PER_MS = 1;
-int MAX_PARTICLES = 100;
+int SIZE_QUAD = 20;
+int SIZE_POINT = 1;
+int PARTICLES_PER_FR = 1;
+int MAX_PARTICLES = 200;
 int LIFETIME = 1; // seconds
-
-int N = 0;
-int TIME_ELAPSED = 0;
-float FRAME_RATE = 0.0f;
 
 struct Point {
     float x, y, z;
 };
+
+int N = 0;
+int TIME_ELAPSED = 0;
+int RESET_TIME = 0;
+int FRAME_RATE = 0;
+int FRAME_COUNT = 0;
 
 struct Location {
     int x, z;
@@ -35,6 +38,9 @@ struct Location {
 vec3 position = {400.0f, 200.0f, 700.0f};
 vec3 direction = {0.0f, 0.0f, -1.0f};
 vec3 up = {0.0f, 1.0f, 0.0f};
+
+float GRAVITY = -4.9f;   //9.8 * 0.5
+struct Point VELOCITY = {0.0f, -1.0f, 0.0f};
 
 float myRandom()
 {

@@ -40,7 +40,6 @@ void initHousePlan() {
 }
 
 void draw_house(int house_E, int house_S, int house_V, int house_N, int house_H) {
-    loadHouseTexture();
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, house_texture);
