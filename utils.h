@@ -18,7 +18,7 @@ int SIZE_QUAD = 20;
 int SIZE_POINT = 1;
 int PARTICLES_PER_FR = 1;
 int MAX_PARTICLES = 200;
-int LIFETIME = 1; // seconds
+int LIFETIME = 2; // seconds
 
 struct Point {
     float x, y, z;

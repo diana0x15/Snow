@@ -17,6 +17,14 @@ void reset() {
     N = 0;
     RESET_TIME = TIME_ELAPSED;
     TIME_ELAPSED = 0;
+    SIZE_QUAD = 20;
+    SIZE_POINT = 1;
+    PARTICLES_PER_FR = 1;
+    MAX_PARTICLES = 200;
+    LIFETIME = 2;
+    GRAVITY = -4.9f;
+    VELOCITY.y = -1.0f;
+
     position[0] = 400.0f;
     position[1] = 200.0f;
     position[2] = 700.0f;
@@ -284,6 +292,9 @@ void display2() {
     // HOUSES
         if (HOUSES) writeText(row-=0.1, "  (h) HOUSES: ON");
         else         writeText(row-=0.1, "  (h) HOUSES: OFF");
+
+    // RESET
+    writeText(row-=0.3, "RESET SYSTEM: SPACE");
 
     glutSwapBuffers();
     glutPostRedisplay();

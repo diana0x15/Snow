@@ -138,11 +138,13 @@ void updateParticles() {
 
         if (particles[i].pos.y <= ground) {
             particles[i].pos.y = ground;
-            if (particles[i].time >= LIFETIME) {
-                particles[i] = createParticle();
-                dead_particles++;
-            }
         }
+
+        if (particles[i].time >= LIFETIME) {
+            particles[i] = createParticle();
+            dead_particles++;
+        }
+
     }
 
     N-=dead_particles;
